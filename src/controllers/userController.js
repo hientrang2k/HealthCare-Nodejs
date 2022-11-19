@@ -28,7 +28,7 @@ let getAllUser = async (req, res) => {
 }
 
 let getUserById = async (req, res) => {
-  let id = req.body.id;
+  let id = req.query.id; //query: params api
   if (id) {
     let user = await userService.getUserById(id);
     return res.status(200).json({
