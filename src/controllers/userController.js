@@ -14,12 +14,39 @@ let handleLogin = async (req, res) => {
   let userData = await userService.handleUserLogin(email, password);
   return res.status(200).json({
     user: userData.user ? userData.user : {},
-    // errCode: 0,
-    // email: email,
-    // password: password,
+    userData
   });
 };
 
+let getAllUser = async (req, res) => {
+  let allUsers = await userService.getAllUser();
+  return res.status(200).json({
+    errCode: 0,
+    message: 'Get all user complete!',
+    allUsers
+  })
+}
+
+let getUserById = async (req, res) => {
+  let id = req.body.id;
+  if (id) {
+    let user = await userService.getUserById(id);
+    return res.status(200).json({
+      errCode: 0,
+      message: 'Get user by id complete!',
+      user
+    })
+  } else {
+    return res.status(500).json({
+      errCode: 3,
+      message: "Missing user's id"
+    })
+  }
+
+}
+
 module.exports = {
   handleLogin: handleLogin,
+  getAllUser: getAllUser,
+  getUserById: getUserById
 };
