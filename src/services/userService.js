@@ -4,6 +4,17 @@ const db = require('../models');
 
 const salt = bcrypt.genSaltSync(10);
 
+let hashUserPassword = (password) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let hashPassword = await bcrypt.hashSync(password, salt);
+      resolve(hashPassword);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 let handleUserLogin = (email, password) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -92,8 +103,100 @@ let getUserById = (id) => {
   })
 }
 
+let createUser = (data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let user = {};
+      let isExist = await checkEmail(data.email);
+      if (isExist) {
+        user.errCode = 2;
+        user.errMessage = "Account is exist!"
+        resolve(user)
+      }
+      let hashPassFromBcrypt = await hashUserPassword(data.password);
+      await db.User.create({
+        email: data.email,
+        password: hashPassFromBcrypt,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        address: data.address,
+        gender: data.gender === '1' ? true : false,
+        typeRole: data.role,
+      });
+      user.errCode = 0;
+      user.message = "Account is created!"
+      resolve(user);
+
+    } catch (e) {
+      reject(e);
+    }
+  })
+}
+
+let deleteUser = (id) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let user = await db.User.findOne({
+        where: { id: id },
+      });
+      if (user) {
+        await db.User.destroy({
+          where: { id: id },
+        });
+        resolve({
+          message: 'Delete completed!'
+        });
+      } else {
+        resolve({
+          errCode: 2,
+          errMessage: "Account don't exist!"
+        });
+      }
+
+    } catch (e) {
+      reject(e);
+    }
+
+
+  })
+}
+
+let updateUser = (userData) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let user = await db.User.findOne({
+        where: { id: userData.id },
+        raw: false,
+      });
+      if (user) {
+        user.email = userData.email;
+        user.firstName = userData.firstName;
+        user.lastName = userData.lastName;
+        user.address = userData.address;
+        user.gender = userData.gender;
+        user.typeRole = userData.role;
+
+        await user.save();
+        resolve({
+          message: "Update user success !"
+        });
+      } else {
+        resolve({
+          errCode: 2,
+          errMessage: "Account don't exist!"
+        })
+      }
+    } catch (e) {
+      reject(e);
+    }
+  })
+}
+
 module.exports = {
   handleUserLogin: handleUserLogin,
   getAllUser: getAllUser,
-  getUserById: getUserById
+  getUserById: getUserById,
+  createUser: createUser,
+  deleteUser: deleteUser,
+  updateUser: updateUser
 };

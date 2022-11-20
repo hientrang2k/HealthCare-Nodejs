@@ -39,14 +39,50 @@ let getUserById = async (req, res) => {
   } else {
     return res.status(500).json({
       errCode: 3,
-      message: "Missing user's id"
+      errMessage: "Missing user's id"
     })
   }
 
 }
 
+let createUser = async (req, res) => {
+  if (!req.body.email) {
+    return res.status(404).json({
+      errCode: 2,
+      errMessage: "Missing user's email"
+    })
+  }
+  let user = await userService.createUser(req.body);
+  return res.status(200).json(user)
+}
+
+let deleteUser = async (req, res) => {
+  if (!req.body.id) {
+    return res.status(404).json({
+      errCode: 2,
+      errMessage: "Choose user want to delete"
+    })
+  }
+  let user = await userService.deleteUser(req.body.id);
+  return res.status(200).json(user)
+}
+
+let updateUser = async (req, res) => {
+  if (!req.body.id) {
+    return res.status(404).json({
+      errCode: 2,
+      errMessage: "Missing user's id"
+    })
+  }
+  let user = await userService.updateUser(req.body);
+  return res.status(200).json(user)
+}
+
 module.exports = {
   handleLogin: handleLogin,
   getAllUser: getAllUser,
-  getUserById: getUserById
+  getUserById: getUserById,
+  createUser: createUser,
+  deleteUser: deleteUser,
+  updateUser: updateUser
 };
