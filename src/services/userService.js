@@ -112,20 +112,22 @@ let createUser = (data) => {
         user.errCode = 2;
         user.errMessage = "Account is exist!"
         resolve(user)
+      } else {
+        let hashPassFromBcrypt = await hashUserPassword(data.password);
+        await db.User.create({
+          email: data.email,
+          password: hashPassFromBcrypt,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          address: data.address,
+          gender: data.gender === '1' ? true : false,
+          typeRole: data.role,
+        });
+        user.errCode = 0;
+        user.message = "Account is created!"
+        resolve(user);
       }
-      let hashPassFromBcrypt = await hashUserPassword(data.password);
-      await db.User.create({
-        email: data.email,
-        password: hashPassFromBcrypt,
-        firstName: data.firstName,
-        lastName: data.lastName,
-        address: data.address,
-        gender: data.gender === '1' ? true : false,
-        typeRole: data.role,
-      });
-      user.errCode = 0;
-      user.message = "Account is created!"
-      resolve(user);
+
 
     } catch (e) {
       reject(e);

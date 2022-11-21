@@ -6,7 +6,7 @@ let handleLogin = async (req, res) => {
   let password = req.body.password;
 
   if (!email || !password) {
-    return res.status(500).json({
+    return res.status(200).json({
       errCode: 1,
       message: 'Missing input parameter!',
     });
@@ -37,7 +37,7 @@ let getUserById = async (req, res) => {
       user
     })
   } else {
-    return res.status(500).json({
+    return res.status(200).json({
       errCode: 3,
       errMessage: "Missing user's id"
     })
@@ -47,8 +47,8 @@ let getUserById = async (req, res) => {
 
 let createUser = async (req, res) => {
   if (!req.body.email) {
-    return res.status(404).json({
-      errCode: 2,
+    return res.status(200).json({
+      errCode: 406,
       errMessage: "Missing user's email"
     })
   }
@@ -58,8 +58,8 @@ let createUser = async (req, res) => {
 
 let deleteUser = async (req, res) => {
   if (!req.body.id) {
-    return res.status(404).json({
-      errCode: 2,
+    return res.status(200).json({
+      errCode: 406,
       errMessage: "Choose user want to delete"
     })
   }
@@ -69,8 +69,8 @@ let deleteUser = async (req, res) => {
 
 let updateUser = async (req, res) => {
   if (!req.body.id) {
-    return res.status(404).json({
-      errCode: 2,
+    return res.status(200).json({
+      errCode: 406,
       errMessage: "Missing user's id"
     })
   }
