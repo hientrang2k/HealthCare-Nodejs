@@ -146,6 +146,7 @@ let deleteUser = (id) => {
           where: { id: id },
         });
         resolve({
+          errCode: 0,
           message: 'Delete completed!'
         });
       } else {

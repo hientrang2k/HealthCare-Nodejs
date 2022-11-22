@@ -57,14 +57,16 @@ let createUser = async (req, res) => {
 }
 
 let deleteUser = async (req, res) => {
-  if (!req.body.id) {
+  if (!req.query.id) {
     return res.status(200).json({
       errCode: 406,
       errMessage: "Choose user want to delete"
     })
+  } else {
+    let user = await userService.deleteUser(req.query.id);
+    return res.status(200).json(user)
   }
-  let user = await userService.deleteUser(req.body.id);
-  return res.status(200).json(user)
+
 }
 
 let updateUser = async (req, res) => {
