@@ -138,6 +138,7 @@ let createUser = (data) => {
 let deleteUser = (id) => {
   return new Promise(async (resolve, reject) => {
     try {
+      let data = {};
       let user = await db.User.findOne({
         where: { id: id },
       });
@@ -150,10 +151,9 @@ let deleteUser = (id) => {
           message: 'Delete completed!'
         });
       } else {
-        resolve({
-          errCode: 2,
-          errMessage: "Account don't exist!"
-        });
+        data.errCode = 2,
+          data.errMessage = "Account don't exist!"
+        resolve(data);
       }
 
     } catch (e) {
@@ -165,6 +165,7 @@ let deleteUser = (id) => {
 }
 
 let updateUser = (userData) => {
+  console.log(userData)
   return new Promise(async (resolve, reject) => {
     try {
       let user = await db.User.findOne({
@@ -178,9 +179,11 @@ let updateUser = (userData) => {
         user.address = userData.address;
         user.gender = userData.gender;
         user.typeRole = userData.role;
+        user.phoneNumber = userData.phoneNumber;
 
         await user.save();
         resolve({
+          errCode: 0,
           message: "Update user success !"
         });
       } else {

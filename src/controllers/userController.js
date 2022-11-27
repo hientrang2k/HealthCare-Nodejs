@@ -10,12 +10,14 @@ let handleLogin = async (req, res) => {
       errCode: 1,
       message: 'Missing input parameter!',
     });
+  } else {
+    let userData = await userService.handleUserLogin(email, password);
+    return res.status(200).json({
+      user: userData.user ? userData.user : {},
+      userData
+    });
   }
-  let userData = await userService.handleUserLogin(email, password);
-  return res.status(200).json({
-    user: userData.user ? userData.user : {},
-    userData
-  });
+
 };
 
 let getAllUser = async (req, res) => {
@@ -51,9 +53,11 @@ let createUser = async (req, res) => {
       errCode: 406,
       errMessage: "Missing user's email"
     })
+  } else {
+    let user = await userService.createUser(req.body);
+    return res.status(200).json(user)
   }
-  let user = await userService.createUser(req.body);
-  return res.status(200).json(user)
+
 }
 
 let deleteUser = async (req, res) => {
@@ -75,9 +79,11 @@ let updateUser = async (req, res) => {
       errCode: 406,
       errMessage: "Missing user's id"
     })
+  } else {
+    let user = await userService.updateUser(req.body);
+    return res.status(200).json(user)
   }
-  let user = await userService.updateUser(req.body);
-  return res.status(200).json(user)
+
 }
 
 module.exports = {
